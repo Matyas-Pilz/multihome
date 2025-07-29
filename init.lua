@@ -2,6 +2,7 @@
 
 multihome = {}
 
+local S = minetest.get_translator("multihome")
 -- Load settings from minetest.conf, else set to default values
 local max    = tonumber(minetest.settings:get("multihome.max")) or 5
 local compat = minetest.settings:get("multihome.compatibility") or "none"
@@ -80,9 +81,9 @@ function multihome.set(player, name, pos)
 	-- If home doesn't already exist (i.e. a new home is being created), check for space.
 	-- Else, if count > max (should only happen if max gets lowered), indicate how many to remove.
 	if not homes[name] and home_count == max then
-		return false, "Error: too many homes. Replace one by reusing an existing name, or remove one with /multihome del <name> or /delhome <name>"
+		return false, S("Error: too many homes.").." "..S("Replace one by reusing an existing name, or remove one with").." /multihome del <"..S("name").."> "..S("or").." /delhome <"..S("name")">")
 	elseif home_count > max then
-		return false, "Error: too many homes. Remove at least " .. dump(home_count - max) .. " with /multihome del <name> or /delhome <name>"
+		return false, S("Error: too many homes.").." "..S("Remove at least ") .. dump(home_count - max) .. " "..S("with").." /multihome del <"..S("name").."> or /delhome <"..S("name")..">")
 	end
 
 	homes[name] = pos
@@ -165,13 +166,13 @@ function multihome.go(player, name)
 	local pos = multihome.get(player, name)
 	if pos then
 		player:setpos(pos)
-		return true, "Teleported to home \""..name.."\""
+		return true, S("Teleported to home").." \""..name.."\""
 	else
 		local homes = minetest.deserialize(player:get_attribute("multihome"))
 		if not homes then
-			return false, "Set a home using /multihome set <name> or /sethome <name>"
+			return false, S("Set a home using").." /multihome set <"..S("name").."> "..S("or").." /sethome <"..S("name")..">"
 		else
-			return false, "Invalid home \""..name.."\""
+			return false, S("Invalid home").." \""..name.."\""
 		end
 	end
 end
