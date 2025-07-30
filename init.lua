@@ -1,6 +1,7 @@
 -- multihome/init.lua
 
 multihome = {}
+local S = core.get_translator("multihome")
 
 -- Load settings from minetest.conf, else set to default values
 local max    = tonumber(minetest.settings:get("multihome.max")) or 5
@@ -80,15 +81,15 @@ function multihome.set(player, name, pos)
 	-- If home doesn't already exist (i.e. a new home is being created), check for space.
 	-- Else, if count > max (should only happen if max gets lowered), indicate how many to remove.
 	if not homes[name] and home_count == max then
-		return false, "Error: too many homes. Replace one by reusing an existing name, or remove one with /multihome del <name> or /delhome <name>"
+		return false, S("Error: too many homes.").." "..S("Replace one by reusing an existing name, or remove one with").." /multihome del <"..S("name").."> "..S("or").." /delhome <"..S(name)">")
 	elseif home_count > max then
-		return false, "Error: too many homes. Remove at least " .. dump(home_count - max) .. " with /multihome del <name> or /delhome <name>"
+		return false, S("Error: too many homes.").." "..S("Remove at least ") .. dump(home_count - max) .. " "..S("with").." /multihome del <"..S("name").."> or /delhome <"..S("name")..">"
 	end
 
 	homes[name] = pos
 	player:set_attribute("multihome", minetest.serialize(homes))
 
-	return true, "Set home \""..name.."\" to "..minetest.pos_to_string(pos)
+	return true, S("Set home").." \""..name.."\" "..S("to").." "..minetest.pos_to_string(pos)
 end
 
 -- [function] Remove home
@@ -101,9 +102,9 @@ function multihome.remove(player, name)
 	if homes[name] then
 		homes[name] = nil
 		player:set_attribute("multihome", minetest.serialize(homes))
-		return true, "Removed home \""..name.."\""
+		return true, S("Removed home").." \""..name.."\""
 	else
-		return false, "Home \""..name.."\" does not exist!"
+		return false, S("Home").." \""..name.."\" "..S("does not exist!")
 	end
 end
 
@@ -152,7 +153,7 @@ function multihome.list(player)
 				list = list..", "..name.." "..minetest.pos_to_string(h)
 			end
 		end
-		return true, "Your Homes ("..count_homes(homes).."/"..max.."): "..list
+		return true, S("Your Homes").." ("..count_homes(homes).."/"..max.."): "..list
 	end
 end
 
@@ -165,13 +166,13 @@ function multihome.go(player, name)
 	local pos = multihome.get(player, name)
 	if pos then
 		player:setpos(pos)
-		return true, "Teleported to home \""..name.."\""
+		return true, S("Teleported to home").." \""..name.."\""
 	else
 		local homes = minetest.deserialize(player:get_attribute("multihome"))
 		if not homes then
-			return false, "Set a home using /multihome set <name> or /sethome <name>"
+			return false, S("Set a home using").." /multihome set <"..S("name").."> "..S("or").." /sethome <"..S("name")..">"
 		else
-			return false, "Invalid home \""..name.."\""
+			return false, S("Invalid home").." \""..name.."\""
 		end
 	end
 end
@@ -272,7 +273,7 @@ if compat == "override" then
 					return multihome.go(name, home)
 				end
 
-				return false, "Invalid parameters (see /help home or /listhomes)"
+				return false, S("Invalid parameters (see").." /help home or /listhomes)"
 			end
 		end,
 	})
@@ -285,7 +286,7 @@ if compat == "override" then
 			if param and param ~= "" then
 				return multihome.set(name, param)
 			else
-				return false, "Invalid parameters (see /help sethome)"
+				return false, S("Invalid parameters (see").." /help sethome)"
 			end
 		end,
 	})
@@ -299,7 +300,7 @@ if compat == "override" then
 			if param and param ~= "" then
 				return multihome.remove(name, param)
 			else
-				return false, "Invalid parameters (see /help delhome or /listhomes)"
+				return false, S("Invalid parameters (see").." /help delhome or /listhomes)"
 			end
 		end,
 	})
