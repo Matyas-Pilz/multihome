@@ -81,9 +81,9 @@ function multihome.set(player, name, pos)
 	-- If home doesn't already exist (i.e. a new home is being created), check for space.
 	-- Else, if count > max (should only happen if max gets lowered), indicate how many to remove.
 	if not homes[name] and home_count == max then
-		return false, S("Error: too many homes")..". "..S("Replace one by reusing an existing name, or remove one with").." /multihome del <"..S("name").."> "..S("or").." /delhome <"..S("name")">")
+		return false, S("Error: too many homes")..". "..S("Replace one by reusing an existing name, or remove one with").." /multihome del <"..S("name").."> "..S("or").." /delhome <"..S("name")..">")
 	elseif home_count > max then
-		return false, S("Error: too many homes")..". "..S("Remove at least ") .. dump(home_count - max) .. " "..S("with").." /multihome del <"..S("name").."> or /delhome <"..S("name")..">"
+		return false, S("Error: too many homes")..". "..S("Remove at least ") .. dump(home_count - max) .. " "..S("with").." /multihome del <"..S("name").."> "..S("or").." /delhome <"..S("name")..">"
 	end
 
 	homes[name] = pos
